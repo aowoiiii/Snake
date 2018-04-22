@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+<head>
+<!--
+
+	测试版贪吃蛇V0.6
+	编写日期:2017-12-07
+	未作代码整理
+	未做边界判断
+	未做自身接触判断
+-->
+<meta charset="utf-8">
+<title>无标题文档</title>	
+	<style>
+		td{border: 1px solid #000000; width: 20px;height: 20px;font-size: 4px;background-color:white;}
+		*{padding: 0;margin: 0}
+	</style>
+</head>
+<body>
+	<table style="float: left;">
+		<script>
+		for(var row=0;row<20;row++){
+			document.write("<tr>");
+			for(var rank=0;rank<20;rank++){
+				document.write("<td></td>");
+			}
+			document.write("</tr>");
+		}
+		</script>
+	</table>
+	<div style="float: left; height: 300px;width: 200px; border: solid 1px #000000; margin: 30px 0 0 30px">	
+		<h4 style="float: left">分数：</h4>
+		<p id="score" style="float: left"></p>
+	</div>
+	
+</body>
+		<script>
+				/*初始化蛇*/
+			var snake=new Array();
+				snake[0]=53;
+				snake[1]=54;
+				snake[2]=55;
+			/*地图坐标*/
+			var row=document.getElementsByTagName("tr");// 获取tr的数组
+			var arr=new Array();
+				for(var i=0;i<20;i++){
+					var rank=row[i].getElementsByTagName("td");
+					arr[i]=new Array();
+					for(var j=0;j<20;j++){
+						arr[i][j]=rank[j];
+					};
+				};
+				/*
+				var k=0;
+				for(var i=0;i<20;i++){
+					for(var j=0;j<20;j++){
+						arr[i][j].innerHTML=i+","+j+","+k;
+						k++;
+					};
+				};
+				*/
+				/*描绘蛇*/
+				function snake_show(){
+						for(var i=0;i<snake.length;i++){
+						var num = snake[i];
+						var row_num=(~~(num/20));
+						var rank_num=(num-row_num*20);
+						arr[row_num][rank_num].style.backgroundColor="red";
+					};
+				}
+				function snake_show_2(){
+					var snake_tail=snake[snake.length-1]
+					var snake_tail_row_num=(~~(snake_tail/20));
+					var snake_tail_rank_num=(snake_tail-snake_tail_row_num*20);
+					arr[snake_tail_row_num][snake_tail_rank_num].style.backgroundColor="";
+				}
+				/*食物*/
+					var food_num=(~~(Math.random()*200))-(0);
+					function food(){
+						var food_row_num=(~~(food_num/20));
+						var food_rank_num=(food_num-food_row_num*20);
+						arr[food_row_num][food_rank_num].style.backgroundColor="blue";	
+					}
+				/*方向*/
+				function direction(e){
+					switch (e){
+						case "up":
+							 var num = snake[0]-20;
+							break;
+						case "left"	:
+							 var num = snake[0]-1;
+							break;
+						case "right" :	
+							 var num = snake[0]+1;
+							break;
+						case "down"	:
+							var num = snake[0]+20;
+							break;
+					}
+						snake.unshift(num);
+							snake_show_2();
+						if(food_num==num){
+							food_num=(~~(Math.random()*200));
+							food();
+						}else{
+							snake.pop();
+						}
+							snake_show();
+					}
+				function score(){
+					document.getElementById("score").innerHTML=snake.length-3;
+				}
+					food();
+					snake_show();
+					//操作
+					console.log(snake);
+					var auto=setInterval("direction('left')",500);	
+					document.onkeydown=function(event){
+					var e = event || window.event || arguments.callee.caller.arguments[0];
+					 if(e && e.keyCode==38){//上
+						 window.clearInterval(auto);
+							direction("up");
+						auto=setInterval("direction('up')",500);
+						 setInterval(score,500);
+					 }else if(e && e.keyCode==37){
+						 window.clearInterval(auto);//左
+							direction("left");
+						 auto=setInterval("direction('left')",500);
+						 setInterval(score,500);
+					 }else if(e && e.keyCode==39){//右
+						 window.clearInterval(auto);
+							direction("right");
+						  auto=setInterval("direction('right')",500);
+						 setInterval(score,500);
+					 }else if(e && e.keyCode==40){//下
+						 window.clearInterval(auto);
+							direction("down");
+						 auto=setInterval("direction('down')",500);
+						 setInterval(score,500);
+					 }
+				 };
+				setInterval(score,500);
+	</script>
+</html>
